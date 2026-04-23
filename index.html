@@ -180,7 +180,7 @@ select:focus  { border-color: var(--select-border-focus); }
 
 option { background: var(--option-bg); color: var(--option-text); }
 
-  @media (max-width: 480px) {
+@media (max-width: 480px) {
   .clock-face {
     width: min(82vw, 300px);
     height: min(82vw, 300px);
@@ -266,12 +266,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // 여기에 버전을 작성
   const DEFAULT_TZ_VERSION = "2026-04-23-1";
 
-  const SIZE = 300, CX = 150, CY = 150;
-
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('width', SIZE);
-  svg.setAttribute('height', SIZE);
   svg.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
+  face.appendChild(svg);
 
   function applyTickColors() {
     const styles = getComputedStyle(document.documentElement);
@@ -285,22 +282,33 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  for (let i = 0; i < 12; i++) {
-    const rad = (i * 30 - 90) * Math.PI / 180;
-    const outerR = CX - 10;
-    const len = i % 3 === 0 ? 14 : 9;
-    const innerR = outerR - len;
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', CX + outerR * Math.cos(rad));
-    line.setAttribute('y1', CY + outerR * Math.sin(rad));
-    line.setAttribute('x2', CX + innerR * Math.cos(rad));
-    line.setAttribute('y2', CY + innerR * Math.sin(rad));
-    line.setAttribute('stroke-width', i % 3 === 0 ? '2' : '1.5');
-    line.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(line);
+  function drawTicks() {
+    const SIZE = face.clientWidth;
+    const CX = SIZE / 2;
+    const CY = SIZE / 2;
+
+    svg.setAttribute('width', SIZE);
+    svg.setAttribute('height', SIZE);
+    svg.innerHTML = '';
+
+    for (let i = 0; i < 12; i++) {
+      const rad = (i * 30 - 90) * Math.PI / 180;
+      const outerR = CX - (SIZE * 0.033);
+      const len = i % 3 === 0 ? SIZE * 0.047 : SIZE * 0.03;
+      const innerR = outerR - len;
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', CX + outerR * Math.cos(rad));
+      line.setAttribute('y1', CY + outerR * Math.sin(rad));
+      line.setAttribute('x2', CX + innerR * Math.cos(rad));
+      line.setAttribute('y2', CY + innerR * Math.sin(rad));
+      line.setAttribute('stroke-width', i % 3 === 0 ? '2' : '1.5');
+      line.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(line);
+    }
+
+    applyTickColors();
   }
-  face.appendChild(svg);
-  applyTickColors();
 
   ['hour','minute','second'].forEach(cls => {
     const d = document.createElement('div');
@@ -382,7 +390,10 @@ document.addEventListener('DOMContentLoaded', function () {
     darkQuery.addListener(applyTickColors);
   }
 
+  window.addEventListener('resize', drawTicks);
+
   loadTimezone();
+  drawTicks();
   tick();
   setInterval(tick, 1000);
 });

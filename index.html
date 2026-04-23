@@ -84,6 +84,8 @@ body {
   transform-origin: bottom center;
   border-radius: 999px;
   background: var(--hand);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .hand.hour {
@@ -103,7 +105,7 @@ body {
   height: 120px;
   margin-left: -0.5px;
   background: var(--second-hand);
-  opacity: 0.85;
+  opacity: 1;
 }
 
 .center-dot {

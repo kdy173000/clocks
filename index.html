@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .join(':');
 
     dateStr.textContent =
-      `${t.year}년 ${String(t.month).padStart(2,'0')}월 ${String(t.day).padStart(2,'0')}일 (${t.weekday})`;
+      `${String(t.month).padStart(2,'0')}월 ${String(t.day).padStart(2,'0')}일 (${t.weekday})`;
   }
 
   tzSel.addEventListener('change', () => {

@@ -304,10 +304,13 @@ select:focus {
         <option value="America/Sao_Paulo">브라질 / 상파울루</option>
         <option value="Australia/Sydney">호주 / 시드니</option>
         <option value="Pacific/Auckland">뉴질랜드 / 오클랜드</option>
+        <option value="Asia/Singapore">싱가포르</option>
+        <option value="Asia/Kolkata">인도 / 뉴델리</option>
+        <option value="Asia/Dubai">아랍에미리트 / 두바이</option>
       </select>
     </div>
     <div class="helper-text">
-      선택한 국가/대표도시는 저장되며, 새로고침 후에도 그대로 유지됩니다.
+      선택 시 자동으로 저장되며, 현재 사용 중인 기기에서 새로고침 후에도 유지됩니다
     </div>
   </div>
 </div>
@@ -322,6 +325,13 @@ const dateText = document.getElementById("dateText");
 const clock = document.getElementById("clock");
 
 const STORAGE_KEY = "selectedWorldTimezone";
+const VERSION_KEY = "selectedWorldTimezoneVersion";
+
+// 여기에 나라를 작성
+const DEFAULT_TZ = "Asia/Kolkata";
+
+// 여기에 버전을 작성
+const DEFAULT_TZ_VERSION = "2026-04-23-1";
 
 function createTicks() {
   for (let i = 0; i < 12; i++) {
@@ -392,17 +402,22 @@ function updateClock() {
 }
 
 function loadSavedTimezone() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    timezoneSelect.value = saved;
-  } else {
-    timezoneSelect.value = "Asia/Seoul";
-    localStorage.setItem(STORAGE_KEY, "Asia/Seoul");
+  const savedTimezone = localStorage.getItem(STORAGE_KEY);
+  const savedVersion = localStorage.getItem(VERSION_KEY);
+
+  if (savedVersion !== DEFAULT_TZ_VERSION) {
+    timezoneSelect.value = DEFAULT_TZ;
+    localStorage.setItem(STORAGE_KEY, DEFAULT_TZ);
+    localStorage.setItem(VERSION_KEY, DEFAULT_TZ_VERSION);
+    return;
   }
+
+  timezoneSelect.value = savedTimezone || DEFAULT_TZ;
 }
 
 timezoneSelect.addEventListener("change", () => {
   localStorage.setItem(STORAGE_KEY, timezoneSelect.value);
+  localStorage.setItem(VERSION_KEY, DEFAULT_TZ_VERSION);
   updateClock();
 });
 

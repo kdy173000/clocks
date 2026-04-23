@@ -8,7 +8,7 @@
 <style>
 :root {
   color-scheme: light dark;
-  --ui-font: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --ui-font: "Pretendard", sans-serif;
 
   --bg-page: transparent;
   --text-main: #111111;
@@ -31,7 +31,6 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-page: transparent;
     --text-main: #f5f5f5;
     --text-sub: #d6d6d6;
     --select-text: #f5f5f5;
@@ -39,7 +38,6 @@
     --select-border: #666666;
     --select-border-hover: #7a7a7a;
     --select-border-focus: #8d8d8d;
-    --select-bg: transparent;
     --option-bg: #1e1e1e;
     --option-text: #ffffff;
 
@@ -51,352 +49,173 @@
   }
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { margin:0; padding:0; box-sizing:border-box; }
 
 body {
   font-family: var(--ui-font);
-  background: var(--bg-page);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: transparent;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1.5rem;
 }
 
 .clock-face {
-  position: relative;
-  width: min(78vw, 300px);
-  height: min(78vw, 300px);
-  border-radius: 50%;
-  background: transparent;
+  position:relative;
+  width:min(78vw,300px);
+  height:min(78vw,300px);
+  border-radius:50%;
 }
 
 .hand {
-  position: absolute;
-  left: 50%;
-  bottom: 50%;
-  transform-origin: bottom center;
-  border-radius: 999px;
-  background: var(--hand);
+  position:absolute;
+  left:50%;
+  bottom:50%;
+  transform-origin:bottom;
+  border-radius:999px;
+  background:var(--hand);
 }
 
-.hand.hour {
-  width: 3px;
-  height: 72px;
-  margin-left: -1.5px;
-}
-
-.hand.minute {
-  width: 2px;
-  height: 108px;
-  margin-left: -1px;
-}
-
-.hand.second {
-  width: 1px;
-  height: 120px;
-  margin-left: -0.5px;
-  background: var(--second-hand);
-  opacity: 0.85;
-}
+.hand.hour { width:3px; height:72px; margin-left:-1.5px; }
+.hand.minute { width:2px; height:108px; margin-left:-1px; }
+.hand.second { width:1px; height:120px; margin-left:-0.5px; }
 
 .center-dot {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 7px;
-  height: 7px;
-  margin: -3.5px 0 0 -3.5px;
-  border-radius: 50%;
-  background: var(--center-dot);
-  z-index: 5;
+  position:absolute;
+  left:50%; top:50%;
+  width:7px; height:7px;
+  margin:-3.5px;
+  border-radius:50%;
+  background:var(--center-dot);
 }
 
 .digital-block {
-  position: absolute;
-  left: 50%;
-  top: 62%;
-  transform: translateX(-50%);
-  text-align: center;
-  pointer-events: none;
-  white-space: nowrap;
+  position:absolute;
+  top:62%;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
 }
 
-.time-str {
-  font-size: 26px;
-  font-weight: 500;
-  color: var(--text-main);
-  letter-spacing: 0.04em;
-  line-height: 1;
-}
+.time-str { font-size:26px; font-weight:500; color:var(--text-main); }
+.date-str { font-size:13px; color:var(--text-sub); }
 
-.date-str {
-  margin-top: 6px;
-  font-size: 13px;
-  color: var(--text-sub);
-  font-weight: 400;
-  letter-spacing: 0.03em;
-}
+.select-area { width:min(82vw,260px); }
 
-.select-area {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 260px;
-}
-
-.select-area label {
-  font-size: 12px;
-  color: var(--select-label);
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
+label { font-size:12px; color:var(--select-label); font-weight:600; }
 
 select {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--select-border);
-  background: var(--select-bg);
-  color: var(--select-text);
-  font-size: 14px;
-  font-family: var(--ui-font);
-  font-weight: 400;
-  appearance: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  width:100%;
+  padding:9px;
+  border-radius:8px;
+  border:1px solid var(--select-border);
+  background:transparent;
+  color:var(--select-text);
 }
 
-select:hover  { border-color: var(--select-border-hover); }
-select:focus  { border-color: var(--select-border-focus); }
-
-option { background: var(--option-bg); color: var(--option-text); }
-
-@media (max-width: 480px) {
-  .clock-face {
-    width: min(82vw, 300px);
-    height: min(82vw, 300px);
-  }
-
-  .hand.hour {
-    height: 62px;
-    margin-left: -1.5px;
-  }
-
-  .hand.minute {
-    height: 88px;
-    margin-left: -1px;
-  }
-
-  .hand.second {
-    height: 100px;
-    margin-left: -0.5px;
-  }
-
-  .time-str {
-    font-size: 22px;
-  }
-
-  .date-str {
-    font-size: 12px;
-  }
-
-  .select-area {
-    width: min(82vw, 260px);
-  }
+@media (max-width:480px){
+  .time-str { font-size:22px; }
 }
+
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="clock-face" id="clockFace">
-    <div class="digital-block">
-      <div class="time-str" id="timeStr">00:00:00</div>
-      <div class="date-str" id="dateStr">2025년 01월 01일 (월)</div>
-    </div>
-  </div>
 
+  <!-- 🔥 위로 이동됨 -->
   <div class="select-area">
     <label for="tzSel">국가 / 대표 도시</label>
     <select id="tzSel">
+      <option value="Asia/Kolkata">인도 / 뉴델리</option>
       <option value="Asia/Seoul">대한민국 / 서울</option>
       <option value="Asia/Tokyo">일본 / 도쿄</option>
       <option value="Asia/Shanghai">중국 / 상하이</option>
-      <option value="Asia/Singapore">싱가포르</option>
-      <option value="Asia/Bangkok">태국 / 방콕</option>
-      <option value="Asia/Kolkata">인도 / 뉴델리</option>
-      <option value="Asia/Dubai">아랍에미리트 / 두바이</option>
-      <option value="Europe/London">영국 / 런던</option>
-      <option value="Europe/Paris">프랑스 / 파리</option>
-      <option value="Europe/Berlin">독일 / 베를린</option>
-      <option value="America/New_York">미국 / 뉴욕</option>
-      <option value="America/Chicago">미국 / 시카고</option>
-      <option value="America/Denver">미국 / 덴버</option>
-      <option value="America/Los_Angeles">미국 / 로스앤젤레스</option>
-      <option value="America/Toronto">캐나다 / 토론토</option>
-      <option value="America/Sao_Paulo">브라질 / 상파울루</option>
-      <option value="Australia/Sydney">호주 / 시드니</option>
-      <option value="Pacific/Auckland">뉴질랜드 / 오클랜드</option>
     </select>
   </div>
+
+  <div class="clock-face" id="clockFace">
+    <div class="digital-block">
+      <div class="time-str" id="timeStr"></div>
+      <div class="date-str" id="dateStr"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const face    = document.getElementById('clockFace');
-  const tzSel   = document.getElementById('tzSel');
-  const timeStr = document.getElementById('timeStr');
-  const dateStr = document.getElementById('dateStr');
+const face = document.getElementById("clockFace");
+const tzSel = document.getElementById("tzSel");
+const timeStr = document.getElementById("timeStr");
+const dateStr = document.getElementById("dateStr");
 
-  const STORAGE_KEY = "tz";
-  const VERSION_KEY = "tz_version";
+// 여기에 나라를 작성
+const DEFAULT_TZ = "Asia/Kolkata";
 
-  // 여기에 나라를 작성
-  const DEFAULT_TZ = "Asia/Kolkata";
+// 여기에 버전을 작성
+const DEFAULT_TZ_VERSION = "2026-04-23-1";
 
-  // 여기에 버전을 작성
-  const DEFAULT_TZ_VERSION = "2026-04-23-1";
+const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+face.appendChild(svg);
 
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
-  face.appendChild(svg);
+function drawTicks(){
+  const size = face.clientWidth;
+  const cx = size/2;
+  const cy = size/2;
 
-  function applyTickColors() {
-    const styles = getComputedStyle(document.documentElement);
-    const major = styles.getPropertyValue('--tick-major').trim();
-    const minor = styles.getPropertyValue('--tick-minor').trim();
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+  svg.innerHTML = "";
 
-    [...svg.querySelectorAll('line')].forEach((line, i) => {
-      const isMajor = i % 3 === 0;
-      line.setAttribute('stroke', isMajor ? major : minor);
-      line.setAttribute('opacity', '1');
-    });
+  for(let i=0;i<12;i++){
+    const rad = (i*30-90)*Math.PI/180;
+    const outer = cx - size*0.03;
+    const inner = outer - (i%3? size*0.03 : size*0.05);
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1", cx+outer*Math.cos(rad));
+    line.setAttribute("y1", cy+outer*Math.sin(rad));
+    line.setAttribute("x2", cx+inner*Math.cos(rad));
+    line.setAttribute("y2", cy+inner*Math.sin(rad));
+    line.setAttribute("stroke","currentColor");
+    svg.appendChild(line);
   }
+}
 
-  function drawTicks() {
-    const SIZE = face.clientWidth;
-    const CX = SIZE / 2;
-    const CY = SIZE / 2;
+function updateClock(){
+  const d = new Date().toLocaleString("en-US",{timeZone:tzSel.value});
+  const date = new Date(d);
 
-    svg.setAttribute('width', SIZE);
-    svg.setAttribute('height', SIZE);
-    svg.innerHTML = '';
+  const h = date.getHours();
+  const m = date.getMinutes();
+  const s = date.getSeconds();
 
-    for (let i = 0; i < 12; i++) {
-      const rad = (i * 30 - 90) * Math.PI / 180;
-      const outerR = CX - (SIZE * 0.033);
-      const len = i % 3 === 0 ? SIZE * 0.047 : SIZE * 0.03;
-      const innerR = outerR - len;
+  face.querySelector(".hour").style.transform=`rotate(${h*30+m/2}deg)`;
+  face.querySelector(".minute").style.transform=`rotate(${m*6}deg)`;
+  face.querySelector(".second").style.transform=`rotate(${s*6}deg)`;
 
-      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', CX + outerR * Math.cos(rad));
-      line.setAttribute('y1', CY + outerR * Math.sin(rad));
-      line.setAttribute('x2', CX + innerR * Math.cos(rad));
-      line.setAttribute('y2', CY + innerR * Math.sin(rad));
-      line.setAttribute('stroke-width', i % 3 === 0 ? '2' : '1.5');
-      line.setAttribute('stroke-linecap', 'round');
-      svg.appendChild(line);
-    }
+  timeStr.textContent = `${h}:${m}:${s}`;
+  dateStr.textContent = `${date.getMonth()+1}월 ${date.getDate()}일`;
+}
 
-    applyTickColors();
-  }
-
-  ['hour','minute','second'].forEach(cls => {
-    const d = document.createElement('div');
-    d.className = 'hand ' + cls;
-    face.appendChild(d);
-    face['_' + cls] = d;
-  });
-
-  const dot = document.createElement('div');
-  dot.className = 'center-dot';
-  face.appendChild(dot);
-
-  function getTimeParts(tz) {
-    const fmt = new Intl.DateTimeFormat('ko-KR', {
-      timeZone: tz,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      weekday: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hourCycle: 'h23'
-    });
-
-    const map = {};
-    fmt.formatToParts(new Date()).forEach(p => { map[p.type] = p.value; });
-
-    return {
-      year: +map.year,
-      month: +map.month,
-      day: +map.day,
-      weekday: map.weekday,
-      hour: +map.hour,
-      minute: +map.minute,
-      second: +map.second
-    };
-  }
-
-  function loadTimezone() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const ver   = localStorage.getItem(VERSION_KEY);
-
-    if (ver !== DEFAULT_TZ_VERSION) {
-      tzSel.value = DEFAULT_TZ;
-      localStorage.setItem(STORAGE_KEY, DEFAULT_TZ);
-      localStorage.setItem(VERSION_KEY, DEFAULT_TZ_VERSION);
-    } else {
-      tzSel.value = saved || DEFAULT_TZ;
-    }
-  }
-
-  function tick() {
-    const t = getTimeParts(tzSel.value);
-    const { hour, minute, second } = t;
-
-    face._hour.style.transform   = `rotate(${((hour % 12) + minute / 60 + second / 3600) * 30}deg)`;
-    face._minute.style.transform = `rotate(${(minute + second / 60) * 6}deg)`;
-    face._second.style.transform = `rotate(${second * 6}deg)`;
-
-    timeStr.textContent = [hour, minute, second]
-      .map(n => String(n).padStart(2, '0'))
-      .join(':');
-
-    dateStr.textContent =
-      `${String(t.month).padStart(2,'0')}월 ${String(t.day).padStart(2,'0')}일 (${t.weekday})`;
-  }
-
-  tzSel.addEventListener('change', () => {
-    localStorage.setItem(STORAGE_KEY, tzSel.value);
-    localStorage.setItem(VERSION_KEY, DEFAULT_TZ_VERSION);
-    tick();
-  });
-
-  const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  if (darkQuery.addEventListener) {
-    darkQuery.addEventListener('change', applyTickColors);
-  } else if (darkQuery.addListener) {
-    darkQuery.addListener(applyTickColors);
-  }
-
-  window.addEventListener('resize', drawTicks);
-
-  loadTimezone();
-  drawTicks();
-  tick();
-  setInterval(tick, 1000);
+["hour","minute","second"].forEach(c=>{
+  const el=document.createElement("div");
+  el.className="hand "+c;
+  face.appendChild(el);
 });
+
+drawTicks();
+window.addEventListener("resize",drawTicks);
+setInterval(updateClock,1000);
+updateClock();
 </script>
+
 </body>
 </html>

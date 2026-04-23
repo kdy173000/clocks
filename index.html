@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>세계 시계</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+<style>
+:root {
+  --ui-font: "Pretendard", sans-serif;
+
+  /* 라이트 */
+  --bg-page: #f5f5f5;
+  --bg-card: transparent;
+  --calc-border: #d9d9d9;
+  --divider: #e5e5e5;
+  --text-main: #111;
+  --text-sub: #444;
+  --input-bg: transparent;
+  --input-border: #cfcfcf;
+  --input-readonly-bg: rgba(0,0,0,0.03);
+  --placeholder: #9a9a9a;
+  --tick: #8a8a8a;
+  --hand: #ffffff;
+  --center-dot: #d9d9d9;
+  --select-bg: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 다크 */
+    --bg-page: #1a1a1a;
+    --bg-card: transparent;
+    --calc-border: #3a3a3a;
+    --divider: #333333;
+    --text-main: #f0f0f0;
+    --text-sub: #aaaaaa;
+    --input-bg: transparent;
+    --input-border: #444444;
+    --input-readonly-bg: rgba(255,255,255,0.04);
+    --placeholder: #666666;
+    --tick: #bdbdbd;
+    --hand: #f5f5f5;
+    --center-dot: #f0f0f0;
+    --select-bg: transparent;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--ui-font);
+  background: var(--bg-page);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  transition: background 0.2s;
+}
+
+.world-clock {
+  width: 100%;
+  max-width: 700px;
+  background: var(--bg-card);
+  border: 1px solid var(--calc-border);
+  border-radius: 14px;
+  padding: 24px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.clock-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.clock-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.clock-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0 24px;
+}
+
+.clock {
+  position: relative;
+  width: min(78vw, 380px);
+  height: min(78vw, 380px);
+  border-radius: 50%;
+  border: 1px solid var(--calc-border);
+  background: transparent;
+}
+
+.tick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 14px;
+  background: var(--tick);
+  border-radius: 999px;
+  transform-origin: center calc((min(78vw, 380px) / 2) - 22px);
+  opacity: 0.95;
+}
+
+.tick.major {
+  width: 3px;
+  height: 22px;
+}
+
+.hand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: bottom center;
+  border-radius: 999px;
+  background: var(--hand);
+}
+
+.hand.hour {
+  width: 4px;
+  height: 80px;
+  margin-left: -2px;
+  margin-top: -80px;
+}
+
+.hand.minute {
+  width: 3px;
+  height: 112px;
+  margin-left: -1.5px;
+  margin-top: -112px;
+}
+
+.hand.second {
+  width: 2px;
+  height: 126px;
+  margin-left: -1px;
+  margin-top: -126px;
+  opacity: 0.9;
+}
+
+.center-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  background: var(--center-dot);
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.digital-time {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.time-text {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.date-text {
+  margin-top: 10px;
+  font-size: 18px;
+  color: var(--text-sub);
+  font-weight: 500;
+}
+
+.control-area {
+  margin-top: 10px;
+  border-top: 1px solid var(--divider);
+  padding-top: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+.select-wrap {
+  position: relative;
+}
+
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background: var(--select-bg);
+  color: var(--text-main);
+  font-size: 15px;
+  font-family: var(--ui-font);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+select:focus {
+  outline: none;
+  border-color: #888;
+}
+
+.helper-text {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-sub);
+  opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+  .world-clock {
+    padding: 18px;
+  }
+
+  .time-text {
+    font-size: 29px;
+  }
+
+  .date-text {
+    font-size: 15px;
+  }
+
+  .hand.hour {
+    height: 62px;
+    margin-top: -62px;
+  }
+
+  .hand.minute {
+    height: 88px;
+    margin-top: -88px;
+  }
+
+  .hand.second {
+    height: 100px;
+    margin-top: -100px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="world-clock">
+  <div class="clock-header">
+    <h2 class="clock-title">세계 시계</h2>
+  </div>
+
+  <div class="clock-wrap">
+    <div class="clock" id="clock">
+      <div class="hand hour" id="hourHand"></div>
+      <div class="hand minute" id="minuteHand"></div>
+      <div class="hand second" id="secondHand"></div>
+      <div class="center-dot"></div>
+
+      <div class="digital-time">
+        <div class="time-text" id="timeText">00:00:00</div>
+        <div class="date-text" id="dateText">0000년 00월 00일</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-area">
+    <label for="timezoneSelect">국가 / 대표도시 선택</label>
+    <div class="select-wrap">
+      <select id="timezoneSelect">
+        <option value="Asia/Seoul">대한민국 / 서울</option>
+        <option value="Asia/Tokyo">일본 / 도쿄</option>
+        <option value="Asia/Shanghai">중국 / 상하이</option>
+        <option value="Asia/Bangkok">태국 / 방콕</option>
+        <option value="Asia/Singapore">싱가포르 / 싱가포르</option>
+        <option value="Asia/Dubai">아랍에미리트 / 두바이</option>
+        <option value="Europe/London">영국 / 런던</option>
+        <option value="Europe/Paris">프랑스 / 파리</option>
+        <option value="Europe/Berlin">독일 / 베를린</option>
+        <option value="America/New_York">미국 / 뉴욕</option>
+        <option value="America/Chicago">미국 / 시카고</option>
+        <option value="America/Denver">미국 / 덴버</option>
+        <option value="America/Los_Angeles">미국 / 로스앤젤레스</option>
+        <option value="America/Toronto">캐나다 / 토론토</option>
+        <option value="America/Vancouver">캐나다 / 밴쿠버</option>
+        <option value="America/Sao_Paulo">브라질 / 상파울루</option>
+        <option value="Australia/Sydney">호주 / 시드니</option>
+        <option value="Pacific/Auckland">뉴질랜드 / 오클랜드</option>
+      </select>
+    </div>
+    <div class="helper-text">
+      선택한 국가/대표도시는 저장되며, 새로고침 후에도 그대로 유지됩니다.
+    </div>
+  </div>
+</div>
+
+<script>
+const timezoneSelect = document.getElementById("timezoneSelect");
+const hourHand = document.getElementById("hourHand");
+const minuteHand = document.getElementById("minuteHand");
+const secondHand = document.getElementById("secondHand");
+const timeText = document.getElementById("timeText");
+const dateText = document.getElementById("dateText");
+const clock = document.getElementById("clock");
+
+const STORAGE_KEY = "selectedWorldTimezone";
+
+function createTicks() {
+  for (let i = 0; i < 12; i++) {
+    const tick = document.createElement("div");
+    tick.className = i % 3 === 0 ? "tick major" : "tick";
+    tick.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg) translateY(calc(-50% + 18px))`;
+    clock.appendChild(tick);
+  }
+}
+
+function getTimeParts(timeZone) {
+  const now = new Date();
+
+  const formatter = new Intl.DateTimeFormat("ko-KR", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23"
+  });
+
+  const parts = formatter.formatToParts(now);
+  const map = {};
+
+  parts.forEach(part => {
+    map[part.type] = part.value;
+  });
+
+  return {
+    year: Number(map.year),
+    month: Number(map.month),
+    day: Number(map.day),
+    weekday: map.weekday,
+    hour: Number(map.hour),
+    minute: Number(map.minute),
+    second: Number(map.second)
+  };
+}
+
+function updateClock() {
+  const selectedTimeZone = timezoneSelect.value;
+  const time = getTimeParts(selectedTimeZone);
+
+  const hour = time.hour;
+  const minute = time.minute;
+  const second = time.second;
+
+  const secondDeg = second * 6;
+  const minuteDeg = (minute + second / 60) * 6;
+  const hourDeg = ((hour % 12) + minute / 60 + second / 3600) * 30;
+
+  hourHand.style.transform = `rotate(${hourDeg}deg)`;
+  minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+  secondHand.style.transform = `rotate(${secondDeg}deg)`;
+
+  timeText.textContent = [
+    String(hour).padStart(2, "0"),
+    String(minute).padStart(2, "0"),
+    String(second).padStart(2, "0")
+  ].join(":");
+
+  dateText.textContent =
+    `${time.year}년 ${String(time.month).padStart(2, "0")}월 ${String(time.day).padStart(2, "0")}일 (${time.weekday})`;
+}
+
+function loadSavedTimezone() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    timezoneSelect.value = saved;
+  } else {
+    timezoneSelect.value = "Asia/Seoul";
+    localStorage.setItem(STORAGE_KEY, "Asia/Seoul");
+  }
+}
+
+timezoneSelect.addEventListener("change", () => {
+  localStorage.setItem(STORAGE_KEY, timezoneSelect.value);
+  updateClock();
+});
+
+createTicks();
+loadSavedTimezone();
+updateClock();
+setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>

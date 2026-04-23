@@ -179,6 +179,40 @@ select:hover  { border-color: var(--select-border-hover); }
 select:focus  { border-color: var(--select-border-focus); }
 
 option { background: var(--option-bg); color: var(--option-text); }
+
+  @media (max-width: 480px) {
+  .clock-face {
+    width: min(82vw, 300px);
+    height: min(82vw, 300px);
+  }
+
+  .hand.hour {
+    height: 62px;
+    margin-left: -1.5px;
+  }
+
+  .hand.minute {
+    height: 88px;
+    margin-left: -1px;
+  }
+
+  .hand.second {
+    height: 100px;
+    margin-left: -0.5px;
+  }
+
+  .time-str {
+    font-size: 22px;
+  }
+
+  .date-str {
+    font-size: 12px;
+  }
+
+  .select-area {
+    width: min(82vw, 260px);
+  }
+}
 </style>
 </head>
 <body>
